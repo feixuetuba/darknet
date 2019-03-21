@@ -696,6 +696,32 @@ void parse_net_options(list *options, network *net)
     net->policy = get_policy(policy_s);
     net->burn_in = option_find_int_quiet(options, "burn_in", 0);
     net->power = option_find_float_quiet(options, "power", 4);
+	net->mean_values = calloc(3, sizeof(float));
+	net->var_values = calloc(3, sizeof(float));
+
+	char *mean_values = option_find(options, "mean_values");
+	char *var_values = option_find(options, "var_valuess");
+	if(mean_values){
+		int i = 0;
+		for(; i<3; ++i){
+			net->mean_values[i] = atof(mean_values);
+			mean_values = strchr(mean_values, ',') + 1;
+		}
+	}
+
+	if(var_values){
+		int i = 0;
+		for(; i<3; ++i){
+			net->var_values[i] = atof(var_values);
+			var_values = strchr(var_values, ',') + 1;
+		}
+	}else{
+		int i = 0;
+			for(; i<3; ++i){
+				net->var_values[i] = 1.0;
+			}
+	}
+	
     if(net->policy == STEP){
         net->step = option_find_int(options, "step", 1);
         net->scale = option_find_float(options, "scale", 1);

@@ -1164,6 +1164,23 @@ void exposure_image(image im, float sat)
     constrain_image(im);
 }
 
+void img_normalize(image im, float *mean_values, float *std_values){
+    assert(im.c == 3);
+    int i, j;
+    float r, g, b;
+    for(j = 0; j < im.h; ++j){
+        for(i = 0; i < im.w; ++i){
+            r = get_pixel(im, i , j, 0);
+            g = get_pixel(im, i , j, 1);
+            b = get_pixel(im, i , j, 2);
+            
+            set_pixel(im, i, j, 0, (r - mean_values[0])/std_values[0]);
+            set_pixel(im, i, j, 1, (g - mean_values[1])/std_values[1]);
+            set_pixel(im, i, j, 2, (b - mean_values[2])/std_values[2]);
+        }
+    }
+}
+
 void distort_image(image im, float hue, float sat, float val)
 {
     rgb_to_hsv(im);
